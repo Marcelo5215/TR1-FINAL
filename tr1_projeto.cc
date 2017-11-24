@@ -317,7 +317,7 @@ int main (int argc, char *argv[]){
   //Criacao dos clientes apontando para a CSMA_1
   UdpEchoClientHelper echoClient (CSMA_1.interfaceContainer.GetAddress(nCsma), 9);
   //Atributos do cliente (conforme visto nos exemplos do NS3)
-  echoClient.SetAttribute ("MaxPackets", UintegerValue (1));
+  echoClient.SetAttribute ("MaxPackets", UintegerValue (100));
   echoClient.SetAttribute ("Interval", TimeValue (Seconds (1.0)));
   echoClient.SetAttribute ("PacketSize", UintegerValue (1024));
 
