@@ -27,31 +27,31 @@
 // -------------------------|----------------------------
 //
 //                     Wifi_1 10.1.16.0
-//                                              AP
-// *    *    *    *    *    *    *    *    *    *
-// |    |    |    |    |    |    |    |    |    |    10.1.1.0
-// nx   ny   n5   n6   n7   n0   n5   n6   n7   n0 ----------------  n1   n2   n3   n4   n1   n2   n3   n4   nx   ny
-//                                              |  point-to-point    |    |    |    |    |    |    |    |    |    |
-//                          point-to-point      |                    ==============================================
-//                           10.1.4.0           |                    |               LAN_1 10.1.18.0
-//                                              |                    |
-//                                              |                    |
-//                 LAN_2 10.1.19.0              |                    |   10.1.6.0
-// ==============================================                    |   point-to-point
-// |    |    |    |    |    |    |    |    |    |    10.1.2.0        |
-// nx   ny   n5   n6   n7   n0   n5   n6   n7   n2 ----------------  n3   n2   n3   n4   n1   n2   n3   n4   nx   ny
-//                                              |  point-to-point    |    |    |    |    |    |    |    |    |    |
-//                        point-to-point        |                    ==============================================
-//                            10.1.5.0          |                    |              LAN_3 10.1.20.0
-//                                              |                    |
-//                                              AP                   | 10.1.7.0
-//                  Wifi_2 10.1.17.0            |                    | point-to-point
-// *    *    *    *    *    *    *    *    *    *                    |
-// |    |    |    |    |    |    |    |    |    |    10.1.3.0        |
-// nx   ny   n5   n6   n7   n0   n5   n6   n7   n4 ----------------  n5   n2   n3   n4   n1   n2   n3   n4   nx   ny
-//                                                 point-to-point    |    |    |    |    |    |    |    |    |    |
-//                                                                   ==============================================
-//                                                                                 LAN_4 10.1.21.0
+//                                                   AP
+// *      *     *     *     *     *    *    *    *    *
+// |      |     |     |     |     |    |    |    |    |          10.1.1.0
+// n14   n13   n12   n11   n10   n9   n8   n7   n6   n0 ------------------------------  n1  n24   n25    n25   n26   n27   n28   n29   n30   n31
+//                                                    -----   point-to-point             |    |     |      |     |     |     |     |     |     |
+//                                         point-to-point |                              =======================================================
+//                                          10.1.4.0      |                              |                 LAN_1 10.1.18.0
+//                                                        |                              |
+//                                                        |                              |
+//                 LAN_2 10.1.19.0                        |                              |   10.1.6.0
+//  =======================================================                              |   point-to-point
+//  |     |     |     |     |     |     |     |     |     |        10.1.2.0              |
+// n40   n39   n38   n37   n36   n35   n34   n33   n32   n2 --------------------------  n3     n41   n42   n43   n44   n45   n46   n47   n48   n49
+//                                                        |  point-to-point              |      |     |     |     |     |     |     |     |     |
+//                                     point-to-point     |                              =======================================================
+//                                      10.1.5.0          |                              |               LAN_3 10.1.20.0
+//                                                        |                              |
+//                                                        AP                             | 10.1.7.0
+//                  Wifi_2 10.1.17.0                      |                              | point-to-point
+//  *     *     *     *     *     *     *     *     *     *                              |
+//  |     |     |     |     |     |     |     |     |     |    10.1.3.0                  |
+// n23   n22   n21   n20   n19   n18   n17   n16   n15   n4 --------------------------  n5    n50   n51   n52   n53   n54   n55   n56   n57   n58
+//                                                           point-to-point              |     |     |     |     |     |     |     |     |     |
+//                                                                                       =======================================================
+//                                                                                                          LAN_4 10.1.21.0
 //
 ********************************************************************************
 // Para simplificar representação, não se representara todas 15 ligações - apesar de estarem implementadas
@@ -109,10 +109,10 @@ int main (int argc, char *argv[]){
 
   //Permite debugger
   bool verbose = true;
+  bool tracing = true;
   //10 nos = 1 roteador + 9 nos extras
   uint32_t nCsma = 9;
   uint32_t nWifi = 9;
-  bool tracing = true;
 
   //Permite alteracao de parametros por linhas de comando
   CommandLine cmd;
@@ -279,12 +279,12 @@ int main (int argc, char *argv[]){
   //Atribuicao de enderecos para as redes Wifi
   //Wifi_1
   address.SetBase ("10.1.16.0", "255.255.255.0");
-  address.Assign(Wifi_1.containerAp);
   address.Assign(Wifi_1.containerSta);
+  address.Assign(Wifi_1.containerAp);
   //Wifi_2
   address.SetBase ("10.1.17.0", "255.255.255.0");
-  address.Assign(Wifi_2.containerAp);
   address.Assign(Wifi_2.containerSta);
+  address.Assign(Wifi_2.containerAp);
   /**********************************************/
   //Atribuicao de enderecos para as redes CSMA
   //CSMA_1
@@ -318,17 +318,13 @@ int main (int argc, char *argv[]){
   UdpEchoClientHelper echoClient (CSMA_1.interfaceContainer.GetAddress(nCsma), 9);
   //Atributos do cliente (conforme visto nos exemplos do NS3)
   echoClient.SetAttribute ("MaxPackets", UintegerValue (1));
-  echoClient.SetAttribute ("Interval", TimeValue (Seconds (1.)));
+  echoClient.SetAttribute ("Interval", TimeValue (Seconds (1.0)));
   echoClient.SetAttribute ("PacketSize", UintegerValue (1024));
 
   //Criacao de um container com os clientes para o servidor,
   //os quais serao todas as redes restantes
   //Clientes ficarao no ultimo elemento de cada rede
   ApplicationContainer clientApps = echoClient.Install (Wifi_1.nodeSta.Get(nWifi - 1));
-  //Tempo de inicio e parada (cliente deve comecar dps do servidor)
-  clientApps.Start (Seconds (2.0));
-  clientApps.Stop (Seconds (60.0));
-
   //Instalacao nas redes restantes e
   //adicao do ponteiro delas ao ApplicationContainer
   clientApps.Add(echoClient.Install (Wifi_2.nodeSta.Get(nWifi - 1)));
@@ -336,6 +332,10 @@ int main (int argc, char *argv[]){
   clientApps.Add(echoClient.Install (CSMA_2.nodeContainer.Get(nCsma - 1)));
   clientApps.Add(echoClient.Install (CSMA_3.nodeContainer.Get(nCsma - 1)));
   clientApps.Add(echoClient.Install (CSMA_4.nodeContainer.Get(nCsma - 1)));
+
+  //Tempo de inicio e parada (cliente deve comecar dps do servidor)
+  clientApps.Start (Seconds (2.0));
+  clientApps.Stop (Seconds (60.0));
 
   //Ativa roteamento inter-redes
   Ipv4GlobalRoutingHelper::PopulateRoutingTables ();
@@ -368,7 +368,7 @@ CSMAContainer createCSMA (CsmaHelper csma, Ptr<Node> node, uint32_t nCsma){
   csmaNodes.Create(nCsma);
 
   NetDeviceContainer csmaDevices;
-  csmaDevices = csma.Install(node);
+  csmaDevices = csma.Install(csmaNodes);
 
   //Atribuicao do que foi criado ao CSMAContainer
   CSMAContainer csmaContainer;
