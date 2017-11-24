@@ -29,7 +29,7 @@
 //                     Wifi_1 10.1.16.0
 //                                                   AP
 // *      *     *     *     *     *    *    *    *    *
-// |      |     |     |     |     |    |    |    |    |          10.1.1.0
+// |      |     |     |     |     |    |    |    |    |          10.1.1.0                                                                    Server
 // n14   n13   n12   n11   n10   n9   n8   n7   n6   n0 ------------------------------  n1  n24   n25    n25   n26   n27   n28   n29   n30   n31
 //                                                    -----   point-to-point             |    |     |      |     |     |     |     |     |     |
 //                                         point-to-point |                              =======================================================
@@ -327,6 +327,7 @@ int main (int argc, char *argv[]){
   ApplicationContainer clientApps = echoClient.Install (Wifi_1.nodeSta.Get(nWifi - 1));
   //Instalacao nas redes restantes e
   //adicao do ponteiro delas ao ApplicationContainer
+  clientApps.Add(echoClient.Install (Wifi_1.nodeSta.Get(nWifi - 1)));
   clientApps.Add(echoClient.Install (Wifi_2.nodeSta.Get(nWifi - 1)));
   clientApps.Add(echoClient.Install (CSMA_1.nodeContainer.Get(nCsma - 1)));
   clientApps.Add(echoClient.Install (CSMA_2.nodeContainer.Get(nCsma - 1)));
