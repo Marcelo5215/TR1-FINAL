@@ -185,6 +185,7 @@ int main (int argc, char *argv[]){
   Wifi_2 = createWifi(wifi, p2pNodes.Get(4), nWifi);
 
 //Instalacao das pilhas de protocolo em todas as redes criadas
+// IPV4, IPV6, UDP, TCP
   InternetStackHelper stack;
   //CSMA
   stack.Install(CSMA_1.nodeContainer);
