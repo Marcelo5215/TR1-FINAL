@@ -69,6 +69,11 @@
 #include "ns3/csma-module.h"
 #include "ns3/internet-module.h"
 
+#include "ns3/netanim-module.h"
+#include "ns3/bs-net-device.h"
+#include "ns3/csma-module.h"
+#include "ns3/uan-module.h"
+
 //Evitar uso das estruturas do ns3 como ns3::
 using namespace ns3;
 
@@ -355,6 +360,61 @@ int main (int argc, char *argv[]){
   csma.EnablePcap("Projeto_TR1_CSMA_3", CSMA_3.deviceContainer.Get(0), true);
   csma.EnablePcap("Projeto_TR1_CSMA_4", CSMA_4.deviceContainer.Get(0), true);
   }
+
+  //Codigo para o uso do NetAnim
+
+  AnimationInterface anim("anim.xml");
+
+  //definindo posicao dos nos ...
+
+  //p2pNodes
+  AnimationInterface::SetConstantPosition (p2pNodes.Get(0), 80, 80);//wifi
+  anim.UpdateNodeColor (p2pNodes.Get(0), 127, 127, 255);
+  AnimationInterface::SetConstantPosition (p2pNodes.Get(1), 60, 80);
+  anim.UpdateNodeColor (p2pNodes.Get(1), 255, 127, 127);
+  AnimationInterface::SetConstantPosition (p2pNodes.Get(2), 50, 62);
+  anim.UpdateNodeColor (p2pNodes.Get(2), 255, 127, 127);
+  AnimationInterface::SetConstantPosition (p2pNodes.Get(3), 90, 62);
+  anim.UpdateNodeColor (p2pNodes.Get(3), 255, 127, 127);
+  AnimationInterface::SetConstantPosition (p2pNodes.Get(4), 60, 45);//wifi
+  anim.UpdateNodeColor (p2pNodes.Get(4), 127, 127, 255);
+  AnimationInterface::SetConstantPosition (p2pNodes.Get(5), 80, 45);
+  anim.UpdateNodeColor (p2pNodes.Get(5), 255, 127, 127);
+
+  int scale = 5;
+  for (int i = 1; i < nCsma; i++) {
+    AnimationInterface::SetConstantPosition (CSMA_1.nodeContainer.Get(i), 55 - scale*i, 80 + scale*i);
+    anim.UpdateNodeColor (CSMA_1.nodeContainer.Get(i), 255, 0, 0);
+  }
+
+  for (int i = 1; i < nCsma; i++) {
+    AnimationInterface::SetConstantPosition (CSMA_2.nodeContainer.Get(i), 45 - scale*i, 62 + scale*i);
+    anim.UpdateNodeColor (CSMA_2.nodeContainer.Get(i), 255, 0, 0);
+  }
+
+  for (int i = 1; i < nCsma; i++) {
+    AnimationInterface::SetConstantPosition (CSMA_3.nodeContainer.Get(i), 95 + scale*i, 62 - scale*i);
+    anim.UpdateNodeColor (CSMA_3.nodeContainer.Get(i), 255, 0, 0);
+  }
+
+  for (int i = 1; i < nCsma; i++) {
+    AnimationInterface::SetConstantPosition (CSMA_4.nodeContainer.Get(i), 85 + scale*i, 45 - scale*i);
+    anim.UpdateNodeColor (CSMA_4.nodeContainer.Get(i), 255, 0, 0);
+  }
+
+  for (int i = 1; i < nWifi; i++) {
+    AnimationInterface::SetConstantPosition (Wifi_1.nodeSta.Get(i), 55 - scale*i, 45 - scale*i);
+    anim.UpdateNodeColor (Wifi_1.nodeSta.Get(i), 0, 0, 255);
+  }
+
+  for (int i = 1; i < nWifi; i++) {
+    AnimationInterface::SetConstantPosition (Wifi_2.nodeSta.Get(i), 85 + scale*i, 80 + scale*i);
+    anim.UpdateNodeColor (Wifi_2.nodeSta.Get(i), 0, 0, 255);
+  }
+
+  anim.SetMaxPktsPerTraceFile(0xFFFFFFFF);
+  anim.EnablePacketMetadata(true);
+  anim.EnableIpv4RouteTracking ("routingtable-wireless.xml", Seconds (0), Seconds (9), Seconds (0.25));
 
   //Execucao e destruicao da simulacao
   Simulator::Run ();
