@@ -318,7 +318,7 @@ int main (int argc, char *argv[]){
   ApplicationContainer serverApps = echoServer.Install (CSMA_1.nodeContainer.Get(nCsma));
   //Hora de inicio e termino da aplicacao (em segundos)
   serverApps.Start (Seconds (1.0));
-  serverApps.Stop (Seconds (60.0));
+  serverApps.Stop (Seconds (120.0));
 
   //Criacao dos clientes apontando para a CSMA_1
   UdpEchoClientHelper echoClient (CSMA_1.interfaceContainer.GetAddress(nCsma), 9);
@@ -342,13 +342,13 @@ int main (int argc, char *argv[]){
 
   //Tempo de inicio e parada (cliente deve comecar dps do servidor)
   clientApps.Start (Seconds (2.0));
-  clientApps.Stop (Seconds (60.0));
+  clientApps.Stop (Seconds (120.0));
 
   //Ativa roteamento inter-redes
   Ipv4GlobalRoutingHelper::PopulateRoutingTables ();
 
   //Manda simulador parar (senao roda infinitamente)
-  Simulator::Stop (Seconds (60.0));
+  Simulator::Stop (Seconds (120.0));
 
   if (tracing == true){
   //Rastreamento para as redes
@@ -382,32 +382,32 @@ int main (int argc, char *argv[]){
   anim.UpdateNodeColor (p2pNodes.Get(5), 255, 127, 127);
 
   int scale = 5;
-  for (int i = 1; i < nCsma; i++) {
+  for (uint32_t i = 1; i < nCsma; i++) {
     AnimationInterface::SetConstantPosition (CSMA_1.nodeContainer.Get(i), 55 - scale*i, 80 + scale*i);
     anim.UpdateNodeColor (CSMA_1.nodeContainer.Get(i), 255, 0, 0);
   }
 
-  for (int i = 1; i < nCsma; i++) {
+  for (uint32_t i = 1; i < nCsma; i++) {
     AnimationInterface::SetConstantPosition (CSMA_2.nodeContainer.Get(i), 45 - scale*i, 62 + scale*i);
     anim.UpdateNodeColor (CSMA_2.nodeContainer.Get(i), 255, 0, 0);
   }
 
-  for (int i = 1; i < nCsma; i++) {
+  for (uint32_t i = 1; i < nCsma; i++) {
     AnimationInterface::SetConstantPosition (CSMA_3.nodeContainer.Get(i), 95 + scale*i, 62 - scale*i);
     anim.UpdateNodeColor (CSMA_3.nodeContainer.Get(i), 255, 0, 0);
   }
 
-  for (int i = 1; i < nCsma; i++) {
+  for (uint32_t i = 1; i < nCsma; i++) {
     AnimationInterface::SetConstantPosition (CSMA_4.nodeContainer.Get(i), 85 + scale*i, 45 - scale*i);
     anim.UpdateNodeColor (CSMA_4.nodeContainer.Get(i), 255, 0, 0);
   }
 
-  for (int i = 1; i < nWifi; i++) {
+  for (uint32_t i = 1; i < nWifi; i++) {
     AnimationInterface::SetConstantPosition (Wifi_1.nodeSta.Get(i), 55 - scale*i, 45 - scale*i);
     anim.UpdateNodeColor (Wifi_1.nodeSta.Get(i), 0, 0, 255);
   }
 
-  for (int i = 1; i < nWifi; i++) {
+  for (uint32_t i = 1; i < nWifi; i++) {
     AnimationInterface::SetConstantPosition (Wifi_2.nodeSta.Get(i), 85 + scale*i, 80 + scale*i);
     anim.UpdateNodeColor (Wifi_2.nodeSta.Get(i), 0, 0, 255);
   }
@@ -443,11 +443,18 @@ CSMAContainer createCSMA (CsmaHelper csma, Ptr<Node> node, uint32_t nCsma){
 
 //Funcao de criacao das caracteristicas da rede Wifi
 WifiContainer createWifi (YansWifiPhyHelper wifi, Ptr<Node> node, uint32_t nWifi){
+
+  //Criacao e atribuicao dos valores do WifiContainer
+  WifiContainer wifiContainer;
+
   //Cria rede com 9 nos estacao
   NodeContainer wifiStaNodes;
   wifiStaNodes.Create(nWifi);
   //Ponto de acesso passado por parametro
   NodeContainer wifiApNode = node;
+
+  wifiContainer.nodeAp = node;
+  wifiContainer.nodeSta = wifiStaNodes;
 
   //Configura canal
   YansWifiChannelHelper channel = YansWifiChannelHelper::Default ();
@@ -465,16 +472,14 @@ WifiContainer createWifi (YansWifiPhyHelper wifi, Ptr<Node> node, uint32_t nWifi
                "ActiveProbing", BooleanValue (false));
 
   //Instalacao de dispositivos wifi nas estacoes
-  NetDeviceContainer staDevices;
-  staDevices = wifi_helper.Install (wifi, mac, wifiStaNodes);
+  wifiContainer.containerSta = wifi_helper.Install (wifi, mac, wifiStaNodes);
 
   //Configuracao pra AP
   mac.SetType ("ns3::ApWifiMac",
   "Ssid", SsidValue (ssid));
 
   //Instalacao de dispositivo wifi no ponto de acesso
-  NetDeviceContainer apDevices;
-  apDevices = wifi_helper.Install (wifi, mac, wifiApNode);
+  wifiContainer.containerAp = wifi_helper.Install (wifi, mac, node);
 
 
   MobilityHelper mobility;
@@ -489,19 +494,13 @@ WifiContainer createWifi (YansWifiPhyHelper wifi, Ptr<Node> node, uint32_t nWifi
 
   //Permite mobilidade pra estacoes
   mobility.SetMobilityModel ("ns3::RandomWalk2dMobilityModel",
-                             "Bounds", RectangleValue (Rectangle (-50, 50, -50, 50)));
-  mobility.Install (wifiStaNodes);
+                             "Bounds", RectangleValue (Rectangle (-150, 150, -150, 150)));
+  mobility.Install (wifiContainer.nodeSta);
 
   //Mobilidade limitado pro AP
   mobility.SetMobilityModel ("ns3::ConstantPositionMobilityModel");
-  mobility.Install (wifiApNode);
+  mobility.Install (wifiContainer.nodeAp);
 
-  //Criacao e atribuicao dos valores do WifiContainer
-  WifiContainer wifiContainer;
-  wifiContainer.nodeAp = wifiApNode;
-  wifiContainer.containerAp = apDevices;
-  wifiContainer.nodeSta = wifiStaNodes;
-  wifiContainer.containerSta = staDevices;
 
   return wifiContainer;
 }
