@@ -368,46 +368,46 @@ int main (int argc, char *argv[]){
   //definindo posicao dos nos ...
 
   //p2pNodes
-  AnimationInterface::SetConstantPosition (p2pNodes.Get(0), 80, 80);//wifi
-  anim.UpdateNodeColor (p2pNodes.Get(0), 127, 127, 255);
-  AnimationInterface::SetConstantPosition (p2pNodes.Get(1), 60, 80);
-  anim.UpdateNodeColor (p2pNodes.Get(1), 255, 127, 127);
-  AnimationInterface::SetConstantPosition (p2pNodes.Get(2), 50, 62);
-  anim.UpdateNodeColor (p2pNodes.Get(2), 255, 127, 127);
-  AnimationInterface::SetConstantPosition (p2pNodes.Get(3), 90, 62);
-  anim.UpdateNodeColor (p2pNodes.Get(3), 255, 127, 127);
-  AnimationInterface::SetConstantPosition (p2pNodes.Get(4), 60, 45);//wifi
-  anim.UpdateNodeColor (p2pNodes.Get(4), 127, 127, 255);
-  AnimationInterface::SetConstantPosition (p2pNodes.Get(5), 80, 45);
-  anim.UpdateNodeColor (p2pNodes.Get(5), 255, 127, 127);
+  AnimationInterface::SetConstantPosition (p2pNodes.Get(0), 70, 70);//wifi
+  anim.UpdateNodeColor (p2pNodes.Get(0), 200, 200, 255);
+  AnimationInterface::SetConstantPosition (p2pNodes.Get(1), 50, 70);
+  anim.UpdateNodeColor (p2pNodes.Get(1), 255, 200, 200);
+  AnimationInterface::SetConstantPosition (p2pNodes.Get(2), 40, 52);
+  anim.UpdateNodeColor (p2pNodes.Get(2), 255, 200, 200);
+  AnimationInterface::SetConstantPosition (p2pNodes.Get(3), 80, 52);
+  anim.UpdateNodeColor (p2pNodes.Get(3), 255, 200, 200);
+  AnimationInterface::SetConstantPosition (p2pNodes.Get(4), 50, 35);//wifi
+  anim.UpdateNodeColor (p2pNodes.Get(4), 200, 200, 255);
+  AnimationInterface::SetConstantPosition (p2pNodes.Get(5), 70, 35);
+  anim.UpdateNodeColor (p2pNodes.Get(5), 255, 200, 200);
 
-  int scale = 5;
-  for (uint32_t i = 1; i < nCsma; i++) {
-    AnimationInterface::SetConstantPosition (CSMA_1.nodeContainer.Get(i), 55 - scale*i, 80 + scale*i);
+  int scale = 3;
+  for (uint32_t i = 1; i <= nCsma; i++) {
+    AnimationInterface::SetConstantPosition (CSMA_1.nodeContainer.Get(i), 45 - scale*i, 70 + scale*i);
     anim.UpdateNodeColor (CSMA_1.nodeContainer.Get(i), 255, 0, 0);
   }
 
-  for (uint32_t i = 1; i < nCsma; i++) {
-    AnimationInterface::SetConstantPosition (CSMA_2.nodeContainer.Get(i), 45 - scale*i, 62 + scale*i);
+  for (uint32_t i = 1; i <= nCsma; i++) {
+    AnimationInterface::SetConstantPosition (CSMA_2.nodeContainer.Get(i), 35 - scale*i, 52 + scale*i);
     anim.UpdateNodeColor (CSMA_2.nodeContainer.Get(i), 255, 0, 0);
   }
 
-  for (uint32_t i = 1; i < nCsma; i++) {
-    AnimationInterface::SetConstantPosition (CSMA_3.nodeContainer.Get(i), 95 + scale*i, 62 - scale*i);
+  for (uint32_t i = 1; i <= nCsma; i++) {
+    AnimationInterface::SetConstantPosition (CSMA_3.nodeContainer.Get(i), 85 + scale*i, 52 - scale*i);
     anim.UpdateNodeColor (CSMA_3.nodeContainer.Get(i), 255, 0, 0);
   }
 
-  for (uint32_t i = 1; i < nCsma; i++) {
-    AnimationInterface::SetConstantPosition (CSMA_4.nodeContainer.Get(i), 85 + scale*i, 45 - scale*i);
+  for (uint32_t i = 1; i <= nCsma; i++) {
+    AnimationInterface::SetConstantPosition (CSMA_4.nodeContainer.Get(i), 75 + scale*i, 35 - scale*i);
     anim.UpdateNodeColor (CSMA_4.nodeContainer.Get(i), 255, 0, 0);
   }
 
-  for (uint32_t i = 1; i < nWifi; i++) {
+  for (uint32_t i = 0; i < nWifi; i++) {
     AnimationInterface::SetConstantPosition (Wifi_1.nodeSta.Get(i), 55 - scale*i, 45 - scale*i);
     anim.UpdateNodeColor (Wifi_1.nodeSta.Get(i), 0, 0, 255);
   }
 
-  for (uint32_t i = 1; i < nWifi; i++) {
+  for (uint32_t i = 0; i < nWifi; i++) {
     AnimationInterface::SetConstantPosition (Wifi_2.nodeSta.Get(i), 85 + scale*i, 80 + scale*i);
     anim.UpdateNodeColor (Wifi_2.nodeSta.Get(i), 0, 0, 255);
   }
